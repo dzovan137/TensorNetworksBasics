@@ -12,15 +12,23 @@ kernelspec:
   name: python3
 ---
 
-# Notebooks with MyST Markdown
+# Introduction
 
-Jupyter Book also lets you write text-based notebooks using MyST Markdown.
-See [the Notebooks with MyST Markdown documentation](https://jupyterbook.org/file-types/myst-notebooks.html) for more detailed instructions.
-This page shows off a notebook written in MyST Markdown.
+We shall give examples in Jupyter notebook for simple implemtation and brevity. 
 
-## An example cell
+## Definitions
 
-With MyST Markdown, you can define code cells with a directive like so:
+Tensor are multi-dimensional arrays of numbers. Diagrammatically we denote a tensor as a filled in solid shape with legs. The legs of a tensor represent the order (rank) of the tensor. In particular, we denote
+
+```{image} /images/def.png
+:alt: def
+:class: bg-primary mb-1
+:width: 700px
+:align: center
+```
+
+
+ 
 
 ```{code-cell}
 print(2 + 2)
