@@ -366,9 +366,13 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-notebook-with-myst-markdown">Create a notebook with MyST Markdown</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickly-add-yaml-metadata-for-myst-notebooks">Quickly add YAML metadata for MyST Notebooks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensor-network-contractions">Tensor Network Contractions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#permutations">Permutations</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -385,44 +389,98 @@ document.write(`
 <p>We shall give examples in Jupyter notebook for simple implemtation and brevity.</p>
 <section id="definitions">
 <h2>Definitions<a class="headerlink" href="#definitions" title="Permalink to this heading">#</a></h2>
-<p>Tensor are multi-dimensional arrays of numbers. Diagrammatically we denote a tensor as a filled in solid shape with legs. The legs of a tensor represent the order (rank) of the tensor. In particular, we denote</p>
+<p><strong>Tensors</strong> are multi-dimensional arrays of numbers. Diagrammatically we denote a tensor as a filled in solid shape with legs. The legs of a tensor represent the order (rank) of the tensor. In particular, we denote</p>
 <a class="bg-primary mb-1 reference internal image-reference" href="_images/def.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/def.png" style="width: 700px;" /></a>
+<p><strong>Tensor networks</strong> are comprised of multiple tensors, where the shared legs denote a <em>contraction</em> (or summation) over this index. Below we make the simplest possible example of a tensor network.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig1.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig1.png" style="width: 700px;" /></a>
+<p>More specifically, this tensor network implies a contraction and if we take the example of square matrices of size n by n we have</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig2.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig2.png" style="width: 700px;" /></a>
+<p>So we see that that tensor networks are nothing but a graphical language to tell us to do matrix-matrix multiplication. So each tensor network can be written down as a summation over selected indices.</p>
+<p>We can now provide further examples such as the one that involves more legs. In case of three leg tensor we can have.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig3.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig3.png" style="width: 700px;" /></a>
+<p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># define a vector of size 8 where the elements are integers between 1 and 8</span>
+<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+
+<span class="c1"># redefine the vector into a 3-rank tensors</span>
+<span class="n">A_ten</span> <span class="o">=</span> <span class="n">A_vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A vector = &quot;</span><span class="p">,</span> <span class="n">A_vec</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A tensor = &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A_ten</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A vector =  [1 2 3 4 5 6 7 8]
+A tensor = 
+[[[1 2]
+  [3 4]]
+
+ [[5 6]
+  [7 8]]]
 </pre></div>
 </div>
 </div>
 </div>
-<p>When your book is built, the contents of any <code class="docutils literal notranslate"><span class="pre">{code-cell}</span></code> blocks will be
-executed with your default Jupyter kernel, and their outputs will be displayed
-in-line with the rest of your content.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Jupyter Book uses <a class="reference external" href="https://jupytext.readthedocs.io/en/latest/">Jupytext</a> to convert text-based files to notebooks, and can support <a class="reference external" href="https://jupyterbook.org/file-types/jupytext.html">many other text-based notebook files</a>.</p>
+<p>We use the print command to show the output as it is complied in Python version 3.10.</p>
+<p>So what have we actually done? In particular</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig4.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig4.png" style="width: 700px;" /></a>
+<p>In this case one is able to visualize the values using 3 dimensions as there are only 3 legs (directions), but it is easy to see how this extends to multiple legs. One can think of each of the legs to represent the particular qubit! We shall illustrate that later.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The given example of a vector is useful in the context of quantum information theory. In particular, we have selected the approprite partition of the vector into a tensor with legs of dimension d = 2 (local Hilbert space dimension).</p>
+<p><strong>Exercise:</strong> Define the correct reshape for</p>
+<ul class="simple">
+<li><p>any integer n qubits of local dimension d = 2</p></li>
+<li><p>any arbitrary local Hilbert space dimension, e.g. qudits d = 3</p></li>
+</ul>
 </div>
-</section>
-<section id="create-a-notebook-with-myst-markdown">
-<h2>Create a notebook with MyST Markdown<a class="headerlink" href="#create-a-notebook-with-myst-markdown" title="Permalink to this heading">#</a></h2>
-<p>MyST Markdown notebooks are defined by two things:</p>
-<ol class="arabic simple">
-<li><p>YAML metadata that is needed to understand if / how it should convert text files to notebooks (including information about the kernel needed).
-See the YAML at the top of this page for example.</p></li>
-<li><p>The presence of <code class="docutils literal notranslate"><span class="pre">{code-cell}</span></code> directives, which will be executed with your book.</p></li>
-</ol>
-<p>That’s all that is needed to get started!</p>
-</section>
-<section id="quickly-add-yaml-metadata-for-myst-notebooks">
-<h2>Quickly add YAML metadata for MyST Notebooks<a class="headerlink" href="#quickly-add-yaml-metadata-for-myst-notebooks" title="Permalink to this heading">#</a></h2>
-<p>If you have a markdown file and you’d like to quickly add YAML metadata to it, so that Jupyter Book will treat it as a MyST Markdown Notebook, run the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jupyter</span><span class="o">-</span><span class="n">book</span> <span class="n">myst</span> <span class="n">init</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">markdownfile</span><span class="o">.</span><span class="n">md</span>
+<section id="tensor-network-contractions">
+<h3>Tensor Network Contractions<a class="headerlink" href="#tensor-network-contractions" title="Permalink to this heading">#</a></h3>
+<p>Now we will describe the contraction operation in a tensor network. However, before that we need two operations and those are</p>
+<ul class="simple">
+<li><p><strong>reshape</strong> (already discussed above)</p></li>
+<li><p><strong>permutation</strong> (we discuss next)</p></li>
+</ul>
+<section id="permutations">
+<h4>Permutations<a class="headerlink" href="#permutations" title="Permalink to this heading">#</a></h4>
+<p>The permutation implies the following.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig5.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig5.png" style="width: 700px;" /></a>
+<p>In python code this is</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># permutation (transposition)</span>
+<span class="n">A_ten_trans</span> <span class="o">=</span> <span class="n">A_ten</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A tensor transposed = &quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A_ten_trans</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A tensor transposed = 
+[[[1 3]
+  [2 4]]
+
+ [[5 7]
+  [6 8]]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Notice that we have just shuffled some elements of the tensor around. All the values are still there, just in a different position as compared to our original tensor given above. Note that the transposition in Python start from 0 index, and the logic is obvious from the construction. In the transposition array we only have assign from where the old leg comes, and put into the order where we want it to be. Another example of the transposition is given below.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig6.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig6.png" style="width: 700px;" /></a>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Exercise:</strong> Provide the python code for example of 4 legs for the example above.</p>
+</div>
+</section>
+</section>
 </section>
 </section>
 
@@ -480,9 +538,13 @@ See the YAML at the top of this page for example.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#create-a-notebook-with-myst-markdown">Create a notebook with MyST Markdown</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickly-add-yaml-metadata-for-myst-notebooks">Quickly add YAML metadata for MyST Notebooks</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definitions">Definitions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tensor-network-contractions">Tensor Network Contractions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#permutations">Permutations</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
