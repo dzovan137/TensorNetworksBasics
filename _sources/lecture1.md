@@ -12,7 +12,7 @@ kernelspec:
   name: python3
 ---
 
-# Introduction
+# Lecture 1 
 
 We shall give examples in Jupyter notebook for simple implementation and brevity. All the codes are executed and their output displayed in the page. We use the print command to show the output as it is complied in Python version 3.10. The code blocks are supposed to be copied in your own Jupyter notebook and each block can be simply added sequentially as all the dependencies are defined at the start.  
 
