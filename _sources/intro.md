@@ -21,6 +21,9 @@ Our <u>tentative goal</u> here is to understand and use the following example of
 ```
 and after this short course you will be able to build and use such networks yourself! :) 
 
+We shall give examples in Jupyter notebook for simple implementation and brevity. All the codes are executed and their output displayed in the page. We use the print command to show the output as it is complied in Python version 3.10. The code blocks are supposed to be copied in your own Jupyter notebook and each block can be simply added sequentially as all the dependencies are defined at the start.
+
+
 Check out the content pages we have bundled together for you. 
 
 ```{tableofcontents}
