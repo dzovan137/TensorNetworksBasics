@@ -12,11 +12,17 @@ kernelspec:
   name: python3
 ---
 
-# Introduction
+# Lecture 1 
 
-We shall give examples in Jupyter notebook for simple implementation and brevity. All the codes are executed and their output displayed in the page. We use the print command to show the output as it is complied in Python version 3.10. The code blocks are supposed to be copied in your own Jupyter notebook and each block can be simply added sequentially as all the dependencies are defined at the start.  
+In this lecture we define the concept of a 
+- {ref}`def`
 
-## Definitions
+and introduce the two basic operations such as
+- {ref}`reshape`
+- {ref}`permutation`
+
+(def)=
+## Tensors and Tensor Networks 
 
 **Tensors** are multi-dimensional arrays of numbers. Diagrammatically we denote a tensor as a filled in solid shape with legs. The legs of a tensor represent the order (rank) of the tensor. In particular, we denote
 
@@ -53,6 +59,8 @@ We can now provide further examples such as the one that involves more legs. In 
 :align: center
 ```
 
+
+### Python code
 Lets get our feet wet by defining our first tensor in programming language Python! 
 
  
@@ -95,7 +103,8 @@ The given example of a vector is useful in the context of quantum information th
 Provide graphical representation of the process. 
 
 ```
-### Reshape
+(reshape)=
+## Reshape
 The examples we provided above actually involve reshaping tensors. We can not only reshape vectors into tensor, but <u>we can reshape any tensor of any rank in any other ranked tensor</u> under the condition that the number of total entries (elements) does not change! Reshaping of a tensor is than just a different organization of smaller matrices, and does not lose us any initial information stored. 
 
 Next, we provide the simplest example of a reshaped tensor with the accompaning code. 
@@ -109,7 +118,7 @@ Next, we provide the simplest example of a reshaped tensor with the accompaning 
 ```
 
 
-
+### Python code
 
 ```{code-cell}
 
@@ -133,8 +142,8 @@ What happens if we want to reshape not neighboring legs? (next chapter answers t
 
 ```
 
-
-### Permutations
+(permutation)=
+## Permutation
 It is useful to permute ("transpose") the legs of a tensor. In particular, we want to switch the positions of certain legs.  The permutation implies the following operation on tensors. 
 
 ```{image} /images/fig5.png
@@ -143,6 +152,8 @@ It is useful to permute ("transpose") the legs of a tensor. In particular, we wa
 :width: 700px
 :align: center
 ```
+
+### Python code
 In python code this is
 
 ```{code-cell}
