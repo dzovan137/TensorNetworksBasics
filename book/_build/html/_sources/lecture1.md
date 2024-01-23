@@ -60,7 +60,7 @@ We can now provide further examples such as the one that involves more legs. In 
 ```
 
 
-#### Python code
+### Python code
 Lets get our feet wet by defining our first tensor in programming language Python! 
 
  
