@@ -440,7 +440,6 @@ document.write(`
 <p>where we obtained new A and B that have elements shuffled. The main idea is that need to shuttle (transpose or permute) the target contraction indices for the matrix A to right, while for the B matrix we have to shuttle (transpose or permute) the contraction indices to left.</p>
 <section id="id1">
 <h4>Python code<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h4>
-<p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># transpose the generate vectors</span>
@@ -456,10 +455,9 @@ document.write(`
 <h3>Step 2<a class="headerlink" href="#step-2" title="Permalink to this heading">#</a></h3>
 <p>Afterwards we reshape the new A and B tensors in such a way</p>
 <a class="bg-primary mb-1 reference internal image-reference" href="_images/lecture2fig3.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/lecture2fig3.png" style="width: 700px;" /></a>
-<p>Here the idea is that we</p>
+<p>Here the idea is that we separate the tensor into a part that we do not touch (indices I and K), and the ones over we operate (index J). By operating we imply performing matrix-matrix multiplication on the targeted indices J.</p>
 <section id="id2">
 <h4>Python code<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h4>
-<p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># reshaping the tensors</span>
@@ -473,11 +471,10 @@ document.write(`
 </section>
 <section id="step-3">
 <h3>Step 3<a class="headerlink" href="#step-3" title="Permalink to this heading">#</a></h3>
-<p>After reshape we indices J have the same dimension and we can perform matrix-matrix multiplication over that index</p>
+<p>After reshape the indices J have the same dimension and we can perform matrix-matrix multiplication over that index</p>
 <a class="bg-primary mb-1 reference internal image-reference" href="_images/lecture2fig4.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/lecture2fig4.png" style="width: 700px;" /></a>
 <section id="id3">
 <h4>Python code<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h4>
-<p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># matrix-matrix multiplication</span>
@@ -494,7 +491,6 @@ document.write(`
 <a class="bg-primary mb-1 reference internal image-reference" href="_images/lecture2fig5.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/lecture2fig5.png" style="width: 700px;" /></a>
 <section id="id4">
 <h4>Python code<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h4>
-<p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we need to keep wanted leg number of the tensor</span>
@@ -504,18 +500,18 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[[[0.49418232 0.59760489]
-   [0.30126044 0.72847538]]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[[[1.09725572 1.42488522]
+   [1.37927833 1.33462755]]
 
-  [[0.77151047 1.01379918]
-   [0.79968472 1.08790372]]]
+  [[1.21799203 1.43758697]
+   [1.14475168 1.14318674]]]
 
 
- [[[1.02386795 1.27504409]
-   [1.00984369 1.4120872 ]]
+ [[[1.53658882 1.32085715]
+   [0.68369798 0.68026999]]
 
-  [[1.01253094 1.33781417]
-   [1.08142084 1.38225316]]]]
+  [[1.10235456 0.72067637]
+   [0.37726278 0.45510506]]]]
 </pre></div>
 </div>
 </div>
@@ -549,23 +545,23 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[[[0.49418232 0.59760489]
-   [0.30126044 0.72847538]]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[[[1.09725572 1.42488522]
+   [1.37927833 1.33462755]]
 
-  [[0.77151047 1.01379918]
-   [0.79968472 1.08790372]]]
+  [[1.21799203 1.43758697]
+   [1.14475168 1.14318674]]]
 
 
- [[[1.02386795 1.27504409]
-   [1.00984369 1.4120872 ]]
+ [[[1.53658882 1.32085715]
+   [0.68369798 0.68026999]]
 
-  [[1.01253094 1.33781417]
-   [1.08142084 1.38225316]]]]
+  [[1.10235456 0.72067637]
+   [0.37726278 0.45510506]]]]
 </pre></div>
 </div>
 </div>
 </div>
-<p>As we can see the outputs are the same! This implies that binary contraction is well defined and proper algorithmic procedure to perform tensor contraction</p>
+<p>As we can see the outputs are the same! This implies that binary contraction is well defined and proper algorithmic procedure to perform tensor contraction.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Exercise1:</strong> Using python function <em>time</em> check how the binary tensor network contraction scales with increasing number of local dimension d as compared to the direct approach. Use <em>matplotlib</em> to present the scaling plots.</p>

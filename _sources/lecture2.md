@@ -61,7 +61,7 @@ We first perform a transposition of the the two tensors A and B in the following
 where we obtained new A and B that have elements shuffled. The main idea is that need to shuttle (transpose or permute) the target contraction indices for the matrix A to right, while for the B matrix we have to shuttle (transpose or permute) the contraction indices to left.  
 
 #### Python code
-Lets get our feet wet by defining our first tensor in programming language Python! 
+
 
  
 ```{code-cell}
@@ -81,10 +81,10 @@ Afterwards we reshape the new A and B tensors in such a way
 :width: 700px
 :align: center
 ```
-Here the idea is that we 
+Here the idea is that we separate the tensor into a part that we do not touch (indices I and K), and the ones over we operate (index J). By operating we imply performing matrix-matrix multiplication on the targeted indices J.
 
 #### Python code
-Lets get our feet wet by defining our first tensor in programming language Python! 
+
 
  
 ```{code-cell}
@@ -95,7 +95,7 @@ B_vec2 = B_vec1.reshape(d**2,d**2)
 ```
 
 ### Step 3
-After reshape we indices J have the same dimension and we can perform matrix-matrix multiplication over that index
+After reshape the indices J have the same dimension and we can perform matrix-matrix multiplication over that index
 
 ```{image} /images/lecture2fig4.png
 :alt: def
@@ -106,8 +106,6 @@ After reshape we indices J have the same dimension and we can perform matrix-mat
 
 
 #### Python code
-Lets get our feet wet by defining our first tensor in programming language Python! 
-
  
 ```{code-cell}
 # matrix-matrix multiplication
@@ -129,7 +127,6 @@ We do a final reshape of the tensor to the desired number of legs as
 
 
 #### Python code
-Lets get our feet wet by defining our first tensor in programming language Python! 
 
  
 ```{code-cell}
@@ -161,7 +158,7 @@ for i in range(0,d):
 
 print(C_direct)
 ```
-As we can see the outputs are the same! This implies that binary contraction is well defined and proper algorithmic procedure to perform tensor contraction 
+As we can see the outputs are the same! This implies that binary contraction is well defined and proper algorithmic procedure to perform tensor contraction.
 
 ```{note}
 **Exercise1:** Using python function *time* check how the binary tensor network contraction scales with increasing number of local dimension d as compared to the direct approach. Use *matplotlib* to present the scaling plots. 
