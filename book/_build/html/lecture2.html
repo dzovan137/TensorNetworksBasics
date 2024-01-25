@@ -365,7 +365,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tensor-contraction">Binary Tensor Contraction</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tensor-contraction-graphical">Binary Tensor Contraction - Graphical</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-0">Step 0</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python-code">Python code</a></li>
 </ul>
@@ -386,10 +386,10 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Python code</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#symbolic-representation-of-the-algorithm">Symbolic representation of the algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-with-direct-evaluation">Comparison with direct evaluation</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-contraction-tool-gven-evenbly">Automatic Contraction Tool (Gven Evenbly)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tensor-contraction-symbolic">Binary Tensor Contraction - Symbolic</a></li>
 </ul>
             </nav>
         </div>
@@ -405,27 +405,13 @@ document.write(`
 <h1>Lecture 2<a class="headerlink" href="#lecture-2" title="Permalink to this heading">#</a></h1>
 <p>In this lecture we perform  tensor network contraction explicity</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#manualcontraction"><span class="std std-ref">Binary Tensor Contraction</span></a></p></li>
-<li><p><a class="reference internal" href="#automaticcontraction"><span class="std std-ref">Automatic Contraction Tool (Gven Evenbly)</span></a></p></li>
+<li><p><a class="reference internal" href="#graphicalcontraction"><span class="std std-ref">Binary Tensor Contraction - Graphical</span></a></p></li>
+<li><p><a class="reference internal" href="#symboliccontraction"><span class="std std-ref">Binary Tensor Contraction - Symbolic</span></a></p></li>
 </ul>
-<section id="binary-tensor-contraction">
-<span id="manualcontraction"></span><h2>Binary Tensor Contraction<a class="headerlink" href="#binary-tensor-contraction" title="Permalink to this heading">#</a></h2>
+<section id="binary-tensor-contraction-graphical">
+<span id="graphicalcontraction"></span><h2>Binary Tensor Contraction - Graphical<a class="headerlink" href="#binary-tensor-contraction-graphical" title="Permalink to this heading">#</a></h2>
 <p>Contraction algorithmically can be broken down to as series of steps. Lets look at the following example</p>
 <a class="bg-primary mb-1 reference internal image-reference" href="_images/lecture2fig1.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/lecture2fig1.png" style="width: 700px;" /></a>
-<p>Before proceeding we create the tensors displayed above using python as</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="c1"># create two random tensors</span>
-<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">B_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>where we create two random rank-4 tensors.</p>
 <section id="step-0">
 <h3>Step 0<a class="headerlink" href="#step-0" title="Permalink to this heading">#</a></h3>
 <p>We first need to initialized the desired tensor. Using Python this is done as</p>
@@ -436,14 +422,15 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="n">d</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="c1"># create two random tensors</span>
-<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">B_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+<span class="n">B_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>where we create two random rank-4 tensors.</p>
+<p>where we (as an example) create two random rank-4 tensors.</p>
 </section>
 </section>
 <section id="step-1">
@@ -456,8 +443,9 @@ document.write(`
 <p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># transpose the generate vectors</span>
+<span class="n">A_vec1</span> <span class="o">=</span> <span class="n">A_vec</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">B_vec1</span> <span class="o">=</span> <span class="n">B_vec</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -474,11 +462,9 @@ document.write(`
 <p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="c1"># define a vector of size 8 where the elements are integers between 1 and 8</span>
-<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># reshaping the tensors</span>
+<span class="n">A_vec2</span> <span class="o">=</span> <span class="n">A_vec1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">B_vec2</span> <span class="o">=</span> <span class="n">B_vec1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -494,11 +480,8 @@ document.write(`
 <p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="c1"># define a vector of size 8 where the elements are integers between 1 and 8</span>
-<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># matrix-matrix multiplication</span>
+<span class="n">C_prim</span> <span class="o">=</span> <span class="n">A_vec2</span> <span class="o">@</span> <span class="n">B_vec2</span>
 </pre></div>
 </div>
 </div>
@@ -514,30 +497,90 @@ document.write(`
 <p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># we need to keep wanted leg number of the tensor</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">C_prim</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[[[0.49418232 0.59760489]
+   [0.30126044 0.72847538]]
 
-<span class="c1"># define a vector of size 8 where the elements are integers between 1 and 8</span>
-<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+  [[0.77151047 1.01379918]
+   [0.79968472 1.08790372]]]
+
+
+ [[[1.02386795 1.27504409]
+   [1.00984369 1.4120872 ]]
+
+  [[1.01253094 1.33781417]
+   [1.08142084 1.38225316]]]]
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 </section>
-<section id="symbolic-representation-of-the-algorithm">
-<h3>Symbolic representation of the algorithm<a class="headerlink" href="#symbolic-representation-of-the-algorithm" title="Permalink to this heading">#</a></h3>
+<section id="comparison-with-direct-evaluation">
+<h3>Comparison with direct evaluation<a class="headerlink" href="#comparison-with-direct-evaluation" title="Permalink to this heading">#</a></h3>
+<p>We can perform the contraction in its full glory, i.e. over all the involved indices as</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define an empty 4-leg tensor</span>
+<span class="n">C_direct</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">])</span>
+
+<span class="c1"># loop over the indices</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+	<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+
+				<span class="c1"># perform the matrix-matrix multiplication explicitely</span>
+				<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+					<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+
+						<span class="n">C_direct</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">C_direct</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="n">A_vec</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">n</span><span class="p">]</span><span class="o">*</span><span class="n">B_vec</span><span class="p">[</span><span class="n">m</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">,</span><span class="n">n</span><span class="p">]</span>
+				
+				
+
+<span class="nb">print</span><span class="p">(</span><span class="n">C_direct</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[[[0.49418232 0.59760489]
+   [0.30126044 0.72847538]]
+
+  [[0.77151047 1.01379918]
+   [0.79968472 1.08790372]]]
+
+
+ [[[1.02386795 1.27504409]
+   [1.00984369 1.4120872 ]]
+
+  [[1.01253094 1.33781417]
+   [1.08142084 1.38225316]]]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>As we can see the outputs are the same! This implies that binary contraction is well defined and proper algorithmic procedure to perform tensor contraction</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Exercise1:</strong> Using python function <em>time</em> check how the binary tensor network contraction scales with increasing number of local dimension d as compared to the direct approach. Use <em>matplotlib</em> to present the scaling plots.</p>
+</div>
+</section>
+</section>
+<section id="binary-tensor-contraction-symbolic">
+<span id="symboliccontraction"></span><h2>Binary Tensor Contraction - Symbolic<a class="headerlink" href="#binary-tensor-contraction-symbolic" title="Permalink to this heading">#</a></h2>
 <p>Sometimes it is easier to take care of the indices symbolically rather graphical and the whole process can be represented as</p>
 <a class="bg-primary mb-1 reference internal image-reference" href="_images/lecture2fig6.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/lecture2fig6.png" style="width: 700px;" /></a>
 <p>The final step is sometimes necessary depending on what kind of contraction and what kind of tensors are used.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Exercise1:</strong> Contract one example where there is a violation of order of indices.</p>
+<p><strong>Exercise2:</strong> Try to contract the following tensors A_{ijab} B_{kabl}. Verify that that in this case one has to perform an additional transposition (i.e. step 5) in order to obtain the correct result.</p>
 </div>
-</section>
-</section>
-<section id="automatic-contraction-tool-gven-evenbly">
-<span id="automaticcontraction"></span><h2>Automatic Contraction Tool (Gven Evenbly)<a class="headerlink" href="#automatic-contraction-tool-gven-evenbly" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -595,7 +638,7 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tensor-contraction">Binary Tensor Contraction</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tensor-contraction-graphical">Binary Tensor Contraction - Graphical</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-0">Step 0</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python-code">Python code</a></li>
 </ul>
@@ -616,10 +659,10 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Python code</a></li>
 </ul>
 </li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#symbolic-representation-of-the-algorithm">Symbolic representation of the algorithm</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-with-direct-evaluation">Comparison with direct evaluation</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#automatic-contraction-tool-gven-evenbly">Automatic Contraction Tool (Gven Evenbly)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#binary-tensor-contraction-symbolic">Binary Tensor Contraction - Symbolic</a></li>
 </ul>
   </nav></div>
 

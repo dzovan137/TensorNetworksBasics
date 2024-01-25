@@ -15,13 +15,13 @@ kernelspec:
 # Lecture 2
 
 In this lecture we perform  tensor network contraction explicity
-- {ref}`manualcontraction`
-- {ref}`automaticcontraction`
+- {ref}`graphicalcontraction`
+- {ref}`symboliccontraction`
 
 
 
-(manualcontraction)=
-## Binary Tensor Contraction
+(graphicalcontraction)=
+## Binary Tensor Contraction - Graphical
 
 Contraction algorithmically can be broken down to as series of steps. Lets look at the following example 
 
@@ -32,17 +32,7 @@ Contraction algorithmically can be broken down to as series of steps. Lets look 
 :align: center
 ```
 
-Before proceeding we create the tensors displayed above using python as
-```{code-cell}
-# import the library that allows us to deal with arrays efficiently
-import numpy as np
 
-# create two random tensors
-A_vec = np.random.rand(2,2,2,2)
-B_vec = np.random.rand(2,2,2,2)
-
-```
-where we create two random rank-4 tensors. 
 ### Step 0
 We first need to initialized the desired tensor. Using Python this is done as
 #### Python code
@@ -50,12 +40,13 @@ We first need to initialized the desired tensor. Using Python this is done as
 # import the library that allows us to deal with arrays efficiently
 import numpy as np
 
+d = 2
 # create two random tensors
-A_vec = np.random.rand(2,2,2,2)
-B_vec = np.random.rand(2,2,2,2)
+A_vec = np.random.rand(d,d,d,d)
+B_vec = np.random.rand(d,d,d,d)
 
 ```
-where we create two random rank-4 tensors. 
+where we (as an example) create two random rank-4 tensors. 
 
 
 ### Step 1
@@ -74,8 +65,9 @@ Lets get our feet wet by defining our first tensor in programming language Pytho
 
  
 ```{code-cell}
-# import the library that allows us to deal with arrays efficiently
-import numpy as np
+# transpose the generate vectors
+A_vec1 = A_vec.transpose(0,2,1,3)
+B_vec1 = B_vec.transpose(0,3,1,2)
 
 ```
 
@@ -96,13 +88,9 @@ Lets get our feet wet by defining our first tensor in programming language Pytho
 
  
 ```{code-cell}
-# import the library that allows us to deal with arrays efficiently
-import numpy as np
-
-# define a vector of size 8 where the elements are integers between 1 and 8
-A_vec = np.array([1,2,3,4,5,6,7,8])
-
-
+# reshaping the tensors
+A_vec2 = A_vec1.reshape(d**2,d**2)
+B_vec2 = B_vec1.reshape(d**2,d**2)
 
 ```
 
@@ -122,12 +110,8 @@ Lets get our feet wet by defining our first tensor in programming language Pytho
 
  
 ```{code-cell}
-# import the library that allows us to deal with arrays efficiently
-import numpy as np
-
-# define a vector of size 8 where the elements are integers between 1 and 8
-A_vec = np.array([1,2,3,4,5,6,7,8])
-
+# matrix-matrix multiplication
+C_prim = A_vec2 @ B_vec2
 
 ```
 
@@ -149,16 +133,44 @@ Lets get our feet wet by defining our first tensor in programming language Pytho
 
  
 ```{code-cell}
-# import the library that allows us to deal with arrays efficiently
-import numpy as np
+# we need to keep wanted leg number of the tensor
+C = C_prim.reshape(d,d,d,d)
+print(C)
+```
 
-# define a vector of size 8 where the elements are integers between 1 and 8
-A_vec = np.array([1,2,3,4,5,6,7,8])
+### Comparison with direct evaluation
+We can perform the contraction in its full glory, i.e. over all the involved indices as
 
+```{code-cell}
+# define an empty 4-leg tensor
+C_direct = np.zeros([d,d,d,d])
+
+# loop over the indices
+for i in range(0,d):
+	for j in range(0,d):
+		for k in range(0,d):
+			for l in range(0,d):
+
+				# perform the matrix-matrix multiplication explicitely
+				for m in range(0,d):
+					for n in range(0,d):
+
+						C_direct[i,j,k,l] = C_direct[i,j,k,l] + A_vec[i,m,j,n]*B_vec[m,k,l,n]
+				
+				
+
+print(C_direct)
+```
+As we can see the outputs are the same! This implies that binary contraction is well defined and proper algorithmic procedure to perform tensor contraction 
+
+```{note}
+**Exercise1:** Using python function *time* check how the binary tensor network contraction scales with increasing number of local dimension d as compared to the direct approach. Use *matplotlib* to present the scaling plots. 
 
 ```
 
-### Symbolic representation of the algorithm
+
+(symboliccontraction)=
+## Binary Tensor Contraction - Symbolic
 Sometimes it is easier to take care of the indices symbolically rather graphical and the whole process can be represented as 
 
 
@@ -171,15 +183,12 @@ Sometimes it is easier to take care of the indices symbolically rather graphical
 The final step is sometimes necessary depending on what kind of contraction and what kind of tensors are used. 
 
 ```{note}
-**Exercise1:** Contract one example where there is a violation of order of indices. 
-
+**Exercise2:** Try to contract the following tensors A_{ijab} B_{kabl}. Verify that that in this case one has to perform an additional transposition (i.e. step 5) in order to obtain the correct result. 
 
 
 ```
 
 
-(automaticcontraction)=
-## Automatic Contraction Tool (Gven Evenbly)
 
 
 
