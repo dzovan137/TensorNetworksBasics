@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Lecture 1 &#8212; Tensor Networks Basics</title>
+    <title>Lecture 4 &#8212; Tensor Networks Basics</title>
   
   
   
@@ -62,11 +62,11 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="_static/sphinx-thebe.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'lecture1';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'lecture4';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Lecture 2" href="lecture2.html" />
-    <link rel="prev" title="Introduction to Tensor Networks" href="intro.html" />
+    <link rel="next" title="Partial Trace" href="PartialTrace.html" />
+    <link rel="prev" title="Lecture 3" href="lecture3.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -169,10 +169,10 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lecture1.html">Lecture 1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lecture2.html">Lecture 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lecture3.html">Lecture 3</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lecture4.html">Lecture 4</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Lecture 4</a></li>
 <li class="toctree-l1"><a class="reference internal" href="PartialTrace.html">Partial Trace</a></li>
 </ul>
 
@@ -245,7 +245,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Flecture1.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Flecture4.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -275,7 +275,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="_sources/lecture1.md" target="_blank"
+      <li><a href="_sources/lecture4.md" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -359,7 +359,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Lecture 1</h1>
+    <h1>Lecture 4</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -369,18 +369,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensors-and-tensor-networks">Tensors and Tensor Networks</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-code">Python code</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reshape">Reshape</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Python code</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permutation">Permutation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Python code</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-product-states">Matrix Product States</a></li>
 </ul>
             </nav>
         </div>
@@ -392,149 +381,11 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="lecture-1">
-<h1>Lecture 1<a class="headerlink" href="#lecture-1" title="Permalink to this heading">#</a></h1>
-<p>In this lecture we define the concept of a</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#def"><span class="std std-ref">Tensors and Tensor Networks</span></a></p></li>
-</ul>
-<p>and introduce the two basic operations such as</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#reshape"><span class="std std-ref">Reshape</span></a></p></li>
-<li><p><a class="reference internal" href="#permutation"><span class="std std-ref">Permutation</span></a></p></li>
-</ul>
-<section id="tensors-and-tensor-networks">
-<span id="def"></span><h2>Tensors and Tensor Networks<a class="headerlink" href="#tensors-and-tensor-networks" title="Permalink to this heading">#</a></h2>
-<p><strong>Tensors</strong> are multi-dimensional arrays of numbers. Diagrammatically we denote a tensor as a filled in solid shape with legs. The legs of a tensor represent the order (rank) of the tensor. In particular, we denote</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/def.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/def.png" style="width: 700px;" /></a>
-<p><strong>Tensor networks</strong> are comprised of multiple tensors, where the shared legs denote a <em>contraction</em> (or summation) over this index. Below we make the simplest possible example of a tensor network.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig1.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig1.png" style="width: 700px;" /></a>
-<p>More specifically, this tensor network implies a contraction and if we take the example of square matrices of size n by n we have</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig2.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig2.png" style="width: 700px;" /></a>
-<p>So we see that that tensor networks are nothing but a graphical language to tell us to do matrix-matrix multiplication. So each tensor network can be written down as a summation over selected indices.</p>
-<p>We can now provide further examples such as the one that involves more legs. In case of three leg tensor we can have.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig3.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig3.png" style="width: 700px;" /></a>
-<section id="python-code">
-<h3>Python code<a class="headerlink" href="#python-code" title="Permalink to this heading">#</a></h3>
-<p>Lets get our feet wet by defining our first tensor in programming language Python!</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="c1"># define a vector of size 8 where the elements are integers between 1 and 8</span>
-<span class="n">A_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
-
-<span class="c1"># redefine the vector into a 3-rank tensors</span>
-<span class="n">d</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">A_ten</span> <span class="o">=</span> <span class="n">A_vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A vector = &quot;</span><span class="p">,</span> <span class="n">A_vec</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A tensor = &quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">A_ten</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A vector =  [1 2 3 4 5 6 7 8]
-A tensor = 
-[[[1 2]
-  [3 4]]
-
- [[5 6]
-  [7 8]]]
-</pre></div>
-</div>
-</div>
-</div>
-<p>So what have we actually done? In particular</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig4.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig4.png" style="width: 700px;" /></a>
-<p>In this case one is able to visualize the values using 3 dimensions as there are only 3 legs (directions), but it is easy to see how this extends to multiple legs. One can think of each of the legs to represent the particular qubit! We shall illustrate that later.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The given example of a vector is useful in the context of quantum information theory and quantum many-body physics. In particular, we have selected the approprite partition of the vector into a tensor with legs of dimension d = 2 (local Hilbert space dimension).</p>
-<p><strong>Exercise:</strong> Define the correct reshape for</p>
-<ul class="simple">
-<li><p>any integer n qubits of local dimension d = 2</p></li>
-<li><p>any arbitrary local Hilbert space dimension, e.g. qudits d = 3</p></li>
-</ul>
-<p>Provide graphical representation of the process.</p>
-</div>
-</section>
-</section>
-<section id="reshape">
-<span id="id1"></span><h2>Reshape<a class="headerlink" href="#reshape" title="Permalink to this heading">#</a></h2>
-<p>The examples we provided above actually involve reshaping tensors. We can not only reshape vectors into tensor, but <u>we can reshape any tensor of any rank in any other ranked tensor</u> under the condition that the number of total entries (elements) does not change! Reshaping of a tensor is than just a different organization of smaller matrices, and does not lose us any initial information stored.</p>
-<p>Next, we provide the simplest example of a reshaped tensor with the accompaning code.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig6.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig6.png" style="width: 700px;" /></a>
-<section id="id2">
-<h3>Python code<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># reshape of a tensor from a 3 leg to 2 leg</span>
-<span class="n">A_ten_reshape</span> <span class="o">=</span> <span class="n">A_vec</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">d</span><span class="o">*</span><span class="n">d</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A tensor reshaped =&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">A_ten_reshape</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A tensor reshaped =
-[[1 2 3 4]
- [5 6 7 8]]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Exercise:</strong> Starting from a tensor with 7 legs and d = 2, reshape this tensor into one with 4 legs where</p>
-<ul class="simple">
-<li><p>second and third</p></li>
-<li><p>fourth and fifth</p></li>
-<li><p>sixth and seventh</p></li>
-</ul>
-<p>are reshaped together. Provide graphical representation of the process.</p>
-<p>What happens if we want to reshape not neighboring legs? (next chapter answers this question)</p>
-</div>
-</section>
-</section>
-<section id="permutation">
-<span id="id3"></span><h2>Permutation<a class="headerlink" href="#permutation" title="Permalink to this heading">#</a></h2>
-<p>It is useful to permute (“transpose”) the legs of a tensor. In particular, we want to switch the positions of certain legs.  The permutation implies the following operation on tensors.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig5.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig5.png" style="width: 700px;" /></a>
-<section id="id4">
-<h3>Python code<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
-<p>In python code this is</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># permutation (transposition)</span>
-<span class="n">A_ten_trans</span> <span class="o">=</span> <span class="n">A_ten</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A tensor transposed = &quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">A_ten_trans</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A tensor transposed = 
-[[[1 3]
-  [2 4]]
-
- [[5 7]
-  [6 8]]]
-</pre></div>
-</div>
-</div>
-</div>
-<p>Notice that we have just shuffled some elements of the tensor around. All the values are still there, just in a different position as compared to our original tensor given above. Note that the transposition in Python start from 0 index, and the logic is obvious from the construction. In the transposition array we only have assign from where the old leg comes, and put into the order where we want it to be. Another example of the transposition is given below.</p>
-<a class="bg-primary mb-1 reference internal image-reference" href="_images/fig7.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/fig7.png" style="width: 700px;" /></a>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Exercise1:</strong> Provide the python code for example of 4 legs for the example above.</p>
-<p><strong>Exercise2:</strong> Provide the python code for the transposing the following tensor A_{123456789} = A_{693751482}</p>
-</div>
-</section>
+  <section class="tex2jax_ignore mathjax_ignore" id="lecture-4">
+<h1>Lecture 4<a class="headerlink" href="#lecture-4" title="Permalink to this heading">#</a></h1>
+<p>Now we put some effort in understanding Matrix Product States</p>
+<section id="matrix-product-states">
+<h2>Matrix Product States<a class="headerlink" href="#matrix-product-states" title="Permalink to this heading">#</a></h2>
 </section>
 </section>
 
@@ -569,20 +420,20 @@ A tensor =
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="intro.html"
+       href="lecture3.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Introduction to Tensor Networks</p>
+        <p class="prev-next-title">Lecture 3</p>
       </div>
     </a>
     <a class="right-next"
-       href="lecture2.html"
+       href="PartialTrace.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Lecture 2</p>
+        <p class="prev-next-title">Partial Trace</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -601,18 +452,7 @@ A tensor =
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensors-and-tensor-networks">Tensors and Tensor Networks</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-code">Python code</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reshape">Reshape</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Python code</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#permutation">Permutation</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Python code</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-product-states">Matrix Product States</a></li>
 </ul>
   </nav></div>
 

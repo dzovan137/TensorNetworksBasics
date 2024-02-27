@@ -1,0 +1,145 @@
+Traceback (most recent call last):
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 172, in wrapped
+    return loop.run_until_complete(inner)
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/sofista/miniconda3/envs/science/lib/python3.10/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# import the library that allows us to deal with arrays efficiently
+import numpy as np
+
+def PartialTrace(N: int, index_list: np.ndarray, A: np.ndarray):
+    """
+    Computes the partial trace over specified indices.
+
+    Args:
+        N (integer): Dimension of the tensor A in terms of the number of spins.
+        index_list (list of integers): List of indices to trace over. Must be ordered from smaller to bigger index.
+        A (state vector): Input pure state to perform partial trace on.
+
+    Returns:
+        out (matrix of floats): Resulting tensor after performing the partial trace.
+
+    Example:
+        >>> N = 4
+        >>> index_list = [2, 4]
+        >>> A = np.random.rand(2**N, 2**N)
+        >>> result = PartialTraceGeneralTensor(N, index_list, A)
+    """
+
+
+    # Check if index_list is empty and it just returns the matrix A as there is nothing to take the trace over
+    if (len(index_list) == 0):
+        return A
+
+
+    # reshape the input vectors into tensors (here we exploit the fact that psi* is just the complex conjugate of psi )
+    reshape_array_default = np.full(N,2)    
+    A_initial = A.reshape(reshape_array_default)
+
+    # generate initial transpose indices vector (we apply permutations and operatorion so transposition is correctly performed )
+    list_A = np.arange(N)
+    list_B = np.arange(N)
+
+    # this changing the indeces by one is because of python stuff (the numbering starts from zero and not 1)
+    index_list = np.array(index_list) - 1
+
+    ##### generating the first transpose rule for A ###
+
+    ## initial step of moving the indices to the left
+    for zz in range(0,len(index_list)):
+        list_A[zz] = index_list[zz]
+
+    ## figure out what are the missing indices that happen because of overwritting in loop above
+    list_A_no_dupl = list(OrderedDict.fromkeys(list_A))
+    missing_indices = np.delete(np.arange(N), list_A_no_dupl)
+
+    ## now replace the doubled indices with indices in the missing_indices array
+    counter = 0
+    for zz in range(len(index_list),len(list_A)):
+        for tt in range(0,len(index_list)):
+            if (list_A[zz] == index_list[tt]):
+                list_A[zz] = missing_indices[counter]
+                counter += 1
+    
+
+    ##### generating the first transpose rule for B ###
+
+    ## initial step of moving the indices to the right
+    for zz in range(0,len(index_list)):
+        list_B[len(list_B) - zz - 1] = index_list[len(index_list) - zz - 1]
+
+    ## figure out what are the missing indices that happen because of overwritting in loop above
+    list_B_no_dupl = list(OrderedDict.fromkeys(list_B))
+    missing_indices = np.delete(np.arange(N), list_B_no_dupl)
+
+    ## now replace the doubled indices with indices in the missing_indices array
+    counter = 0
+    for zz in range(0,len(list_B)-len(index_list)):
+        for tt in range(0,len(index_list)):
+            if (list_B[zz] == index_list[tt]):
+                list_B[zz] = missing_indices[counter]
+                counter += 1
+
+
+    ##### generating the second transpose rule for A ###
+
+    list_A_cut = list_A[len(index_list):]
+    list_A_cut_sort = np.sort(list_A_cut)
+
+    list_B_cut = list_B[:-len(index_list)]
+    list_B_cut_sort = np.sort(list_B_cut)
+
+    transpose2_A = np.append(index_list,list_A_cut_sort)
+    transpose2_B = np.append(list_B_cut_sort,index_list)
+
+    ############### MAIN OPERATION AFTER ALL PREPARATION HAS BEEN PERFORMED ::: TRANSPOSITION ON A and B
+    A = A_initial.transpose(transpose2_A).reshape(2**len(index_list),2**(N - len(index_list)))
+    B = A_initial.transpose(transpose2_B).reshape(2**(N - len(index_list)),2**len(index_list))
+
+    # FINAL MULTIPLICATION
+    out = (A @ np.conjugate(B))
+
+    return out
+
+zero    = np.array([1.0,0.0])
+one     = np.array([0.0,1.0])
+ 
+state = (1.0/np.sqrt(2.0))*(np.kron(zero,zero) + np.kron(one,one))
+
+RDM = PartialTrace(2,[2],state)
+print('Reduced Density Matrix =')
+print(RDM)
+
+
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[1], line 103[0m
+[1;32m     99[0m one     [38;5;241m=[39m np[38;5;241m.[39marray([[38;5;241m0.0[39m,[38;5;241m1.0[39m])
+[1;32m    101[0m state [38;5;241m=[39m ([38;5;241m1.0[39m[38;5;241m/[39mnp[38;5;241m.[39msqrt([38;5;241m2.0[39m))[38;5;241m*[39m(np[38;5;241m.[39mkron(zero,zero) [38;5;241m+[39m np[38;5;241m.[39mkron(one,one))
+[0;32m--> 103[0m RDM [38;5;241m=[39m [43mPartialTrace[49m[43m([49m[38;5;241;43m2[39;49m[43m,[49m[43m[[49m[38;5;241;43m2[39;49m[43m][49m[43m,[49m[43mstate[49m[43m)[49m
+[1;32m    104[0m [38;5;28mprint[39m([38;5;124m'[39m[38;5;124mReduced Density Matrix =[39m[38;5;124m'[39m)
+[1;32m    105[0m [38;5;28mprint[39m(RDM)
+
+Cell [0;32mIn[1], line 47[0m, in [0;36mPartialTrace[0;34m(N, index_list, A)[0m
+[1;32m     44[0m     list_A[zz] [38;5;241m=[39m index_list[zz]
+[1;32m     46[0m [38;5;66;03m## figure out what are the missing indices that happen because of overwritting in loop above[39;00m
+[0;32m---> 47[0m list_A_no_dupl [38;5;241m=[39m [38;5;28mlist[39m([43mOrderedDict[49m[38;5;241m.[39mfromkeys(list_A))
+[1;32m     48[0m missing_indices [38;5;241m=[39m np[38;5;241m.[39mdelete(np[38;5;241m.[39marange(N), list_A_no_dupl)
+[1;32m     50[0m [38;5;66;03m## now replace the doubled indices with indices in the missing_indices array[39;00m
+
+[0;31mNameError[0m: name 'OrderedDict' is not defined
+
