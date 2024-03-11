@@ -8,4 +8,6 @@ chapters:
 - file: lecture2
 - file: lecture3
 - file: lecture4
+- file: PartialTrace
+- file: RandomMatrixTheory
 #- file: SpinChainDiagonalization

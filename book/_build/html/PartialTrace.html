@@ -1,0 +1,689 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Partial Trace &#8212; Tensor Networks Basics</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'PartialTrace';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Lecture 4" href="lecture4.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Tensor Networks Basics - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Tensor Networks Basics - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="intro.html">
+                    Introduction to Tensor Networks
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="lecture1.html">Lecture 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lecture2.html">Lecture 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lecture3.html">Lecture 3</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lecture4.html">Lecture 4</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Partial Trace</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2FPartialTrace.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/PartialTrace.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Partial Trace</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definition">Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensor-network-algorithm-for-partial-trace">Tensor Network Algorithm for Partial Trace</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1">Step 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2">Step 2</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#symbolic-manipulations-example">Symbolic manipulations example</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python-code">Python code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="partial-trace">
+<h1>Partial Trace<a class="headerlink" href="#partial-trace" title="Permalink to this heading">#</a></h1>
+<p>Here we define the partial trace and show how <u>easy</u> and <u>efficient</u> it is to perform this operation using tensor network representations and by employing the simple tricks and knowledge we have introduced in <a class="reference internal" href="lecture1.html"><span class="doc std std-doc">Lecture 1</span></a> and <a class="reference internal" href="lecture2.html"><span class="doc std std-doc">Lecture 2</span></a>.</p>
+<p>The most direct advantage of using the tensor network representation in computing the partial trace is that we avoid building the the total density matrix and only output the final reduced density matrix!</p>
+<section id="definition">
+<h2>Definition<a class="headerlink" href="#definition" title="Permalink to this heading">#</a></h2>
+<p>Partial trace operation holds an important role in quantum information. Partial trace is an ‘inverse’ operation of the tensor product. Tensor product forms larger composity systems from smaller ones, while partial trace forms smaller systems by ignoring degree’s of freedom of the larger system. Partial trace is directly related to <a class="reference external" href="https://en.wikipedia.org/wiki/Marginal_distribution">marginal probability distributions</a>.</p>
+<p>For a composite system</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace1.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace1.png" style="width: 200px;" /></a>
+<p>the partial trace over the degrees of freedom of the Hilbert space on subsystem B with an orthonormal basis (kets over j)</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace2.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace2.png" style="width: 600px;" /></a>
+<p>so we write</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace3.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace3.png" style="width: 300px;" /></a>
+<p>On the other hand we can also perform a partial trace over the subsystem A and we would in that case have</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace4.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace4.png" style="width: 600px;" /></a>
+<p>that we denote as</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace5.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace5.png" style="width: 300px;" /></a>
+</section>
+<section id="tensor-network-algorithm-for-partial-trace">
+<h2>Tensor Network Algorithm for Partial Trace<a class="headerlink" href="#tensor-network-algorithm-for-partial-trace" title="Permalink to this heading">#</a></h2>
+<p>Now we show how to perform this operation numerically given a pure state.</p>
+<section id="step-1">
+<h3>Step 1<a class="headerlink" href="#step-1" title="Permalink to this heading">#</a></h3>
+<p>First reshape the pure state vector into N (corresponding to spin number of d = 2 dimension) legged tensor as</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace6.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace6.png" style="width: 500px;" /></a>
+</section>
+<section id="step-2">
+<h3>Step 2<a class="headerlink" href="#step-2" title="Permalink to this heading">#</a></h3>
+<p>Perform all the leg contractions between these two tensors that make up the subsystem we are tracing out.</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace7.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace7.png" style="width: 500px;" /></a>
+<p>For example in this previous image we traced out spins 3,4,5,…,N, and kept the subsystem we are interested in to be on spins 1 and 2.</p>
+<section id="symbolic-manipulations-example">
+<h4>Symbolic manipulations example<a class="headerlink" href="#symbolic-manipulations-example" title="Permalink to this heading">#</a></h4>
+<p>Explicitely in case we have a 5 qubit/spin and we want to trace out qubits/spins 3,4,5 we perform the following steps</p>
+<a class="bg-primary mb-1 reference internal image-reference" href="_images/PartialTrace8.png"><img alt="def" class="bg-primary mb-1 align-center" src="_images/PartialTrace8.png" style="width: 500px;" /></a>
+<p>Here now I is of dimension 2 to the power of two twice, so basically 2^4, and K as well, and that now consitutes the reduced density matrix.</p>
+</section>
+<section id="python-code">
+<h4>Python code<a class="headerlink" href="#python-code" title="Permalink to this heading">#</a></h4>
+<p>Here is the Python code that performs the partial trace operation for qubits for any choice of subpartitions (non-contiguous also possible).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import the library that allows us to deal with arrays efficiently</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># import ordering library</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+
+<span class="k">def</span> <span class="nf">PartialTrace</span><span class="p">(</span><span class="n">N</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">index_list</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">A</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the partial trace over specified indices.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        N (integer): Dimension of the tensor A in terms of the number of spins.</span>
+<span class="sd">        index_list (list of integers): List of indices to trace over. Must be ordered from smaller to bigger index.</span>
+<span class="sd">        A (state vector): Input pure state to perform partial trace on.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        out (matrix of floats): Resulting tensor after performing the partial trace.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">	zero    = np.array([1.0,0.0])</span>
+<span class="sd">	one     = np.array([0.0,1.0])</span>
+<span class="sd">	 </span>
+<span class="sd">	state = (1.0/np.sqrt(2.0))*(np.kron(zero,zero) + np.kron(one,one))</span>
+
+<span class="sd">	RDM = PartialTrace(2,[2],state)</span>
+<span class="sd">	print(&#39;Reduced Density Matrix =&#39;)</span>
+<span class="sd">	print(RDM)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+
+    <span class="c1"># Check if index_list is empty and it just returns the matrix A as there is nothing to take the trace over</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">A</span>
+
+
+    <span class="c1"># reshape the input vectors into tensors (here we exploit the fact that psi* is just the complex conjugate of psi )</span>
+    <span class="n">reshape_array_default</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>    
+    <span class="n">A_initial</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">reshape_array_default</span><span class="p">)</span>
+
+    <span class="c1"># generate initial transpose indices vector (we apply permutations and operatorion so transposition is correctly performed )</span>
+    <span class="n">list_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+    <span class="n">list_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+    <span class="c1"># this changing the indeces by one is because of python stuff (the numbering starts from zero and not 1)</span>
+    <span class="n">index_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="c1">##### generating the first transpose rule for A ###</span>
+
+    <span class="c1">## initial step of moving the indices to the left</span>
+    <span class="k">for</span> <span class="n">zz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+        <span class="n">list_A</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">index_list</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span>
+
+    <span class="c1">## figure out what are the missing indices that happen because of overwritting in loop above</span>
+    <span class="n">list_A_no_dupl</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">OrderedDict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">list_A</span><span class="p">))</span>
+    <span class="n">missing_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">list_A_no_dupl</span><span class="p">)</span>
+
+    <span class="c1">## now replace the doubled indices with indices in the missing_indices array</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">zz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">list_A</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">tt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">list_A</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span> <span class="o">==</span> <span class="n">index_list</span><span class="p">[</span><span class="n">tt</span><span class="p">]):</span>
+                <span class="n">list_A</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">missing_indices</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+
+    <span class="c1">##### generating the first transpose rule for B ###</span>
+
+    <span class="c1">## initial step of moving the indices to the right</span>
+    <span class="k">for</span> <span class="n">zz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+        <span class="n">list_B</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">list_B</span><span class="p">)</span> <span class="o">-</span> <span class="n">zz</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">index_list</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span> <span class="o">-</span> <span class="n">zz</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1">## figure out what are the missing indices that happen because of overwritting in loop above</span>
+    <span class="n">list_B_no_dupl</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">OrderedDict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">list_B</span><span class="p">))</span>
+    <span class="n">missing_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">list_B_no_dupl</span><span class="p">)</span>
+
+    <span class="c1">## now replace the doubled indices with indices in the missing_indices array</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">zz</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">list_B</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">tt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">list_B</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span> <span class="o">==</span> <span class="n">index_list</span><span class="p">[</span><span class="n">tt</span><span class="p">]):</span>
+                <span class="n">list_B</span><span class="p">[</span><span class="n">zz</span><span class="p">]</span> <span class="o">=</span> <span class="n">missing_indices</span><span class="p">[</span><span class="n">counter</span><span class="p">]</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+
+    <span class="c1">##### generating the second transpose rule for A ###</span>
+
+    <span class="n">list_A_cut</span> <span class="o">=</span> <span class="n">list_A</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">):]</span>
+    <span class="n">list_A_cut_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">list_A_cut</span><span class="p">)</span>
+
+    <span class="n">list_B_cut</span> <span class="o">=</span> <span class="n">list_B</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)]</span>
+    <span class="n">list_B_cut_sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">list_B_cut</span><span class="p">)</span>
+
+    <span class="n">transpose2_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_list</span><span class="p">,</span><span class="n">list_A_cut_sort</span><span class="p">)</span>
+    <span class="n">transpose2_B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">list_B_cut_sort</span><span class="p">,</span><span class="n">index_list</span><span class="p">)</span>
+
+    <span class="c1">############### MAIN OPERATION AFTER ALL PREPARATION HAS BEEN PERFORMED ::: TRANSPOSITION ON A and B</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">A_initial</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">transpose2_A</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">),</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)))</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">A_initial</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">transpose2_B</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">)),</span><span class="mi">2</span><span class="o">**</span><span class="nb">len</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span>
+
+    <span class="c1"># FINAL MULTIPLICATION</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">conjugate</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="c1"># Explicite example of the 2 qubit bell state</span>
+<span class="n">zero</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+<span class="n">one</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">])</span>
+ 
+<span class="n">state</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">))</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">zero</span><span class="p">,</span><span class="n">zero</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">one</span><span class="p">,</span><span class="n">one</span><span class="p">))</span>
+
+<span class="n">RDM</span> <span class="o">=</span> <span class="n">PartialTrace</span><span class="p">(</span><span class="mi">2</span><span class="p">,[</span><span class="mi">2</span><span class="p">],</span><span class="n">state</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reduced Density Matrix =&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">RDM</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Reduced Density Matrix =
+[[0.5 0. ]
+ [0.  0.5]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Exercise1:</strong> Verify that the code produces correct result for the reduced density state by tracing over the bell states second qubit explicitely.</p>
+<p><strong>Exercise2:</strong> Verify that the function to perform partial trace follows the symbolic manipulations example for 5 qubits described above. So at each step of the function execution print the lists and cross reference with what should be happening.</p>
+<p><strong>Exercise3:</strong> Solve more examples of entangled pure states and check if the code produces correct outputs.</p>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="lecture4.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Lecture 4</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#definition">Definition</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tensor-network-algorithm-for-partial-trace">Tensor Network Algorithm for Partial Trace</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1">Step 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2">Step 2</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#symbolic-manipulations-example">Symbolic manipulations example</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#python-code">Python code</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Jovan Odavić
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
