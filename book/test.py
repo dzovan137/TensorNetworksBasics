@@ -33,7 +33,7 @@
 import numpy as np
 import time
 
-d = 2
+d = 10
 # create two random tensors
 A_vec = np.random.rand(d,d,d,d)
 B_vec = np.random.rand(d,d,d,d)
