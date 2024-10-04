@@ -49,26 +49,36 @@ diag(500)
 
 
 ## 2. Logger
+```{code-cell}
+import datetime
 
 
+def log(func):
+    def wrapper(*args, **kwargs):
+        with open("logs.txt", "a") as f:
+            f.write(
+                "Called function with "
+                + " ".join([str(arg) for arg in args])
+                + " at "
+                + str(datetime.datetime.now())
+                + "\n"
+            )
+            val = func(*args, **kwargs)
+            return val
 
-```{note}
-**Exercise1:** Verify that that the code outputs values consistent with the Wigner semi-circle law.
-
-**Exercise2:** Verify that the values have zero mean value and standard deviation (sqruare root of variance) equal to 1.
-
-**Exercise3:** Implement the same code for the real symmetric (GOE) ensemble.
-
-**Exercise4:** Check if the spacings follow the Wigner surmise.
-
-**Exercise5:** In what situations we get the Poisson distribution? Make a code for that.
+    return wrapper
 
 
+@log
+def run(a, b, c):
+    print(a + b + c)
 
 
+run(1, 2, 3)
 
 
 ```
+
 
 
 
