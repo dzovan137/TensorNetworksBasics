@@ -10,4 +10,5 @@ chapters:
 - file: lecture4
 - file: PartialTrace
 - file: RandomMatrixTheory
+- file: PythonDecorators
 #- file: SpinChainDiagonalization
