@@ -371,7 +371,8 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timer">1. Timer</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logger">2. Logger</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#average-timer">2. Average Timer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logger">3. Logger</a></li>
 </ul>
             </nav>
         </div>
@@ -420,14 +421,73 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Executed in: 0.047348737716674805 seconds
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Executed in: 0.11004471778869629 seconds
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="average-timer">
+<h2>2. Average Timer<a class="headerlink" href="#average-timer" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+
+
+
+<span class="k">def</span> <span class="nf">timer1</span><span class="p">(</span><span class="n">how_many_times</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">decorated_function</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+            <span class="n">add</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">how_many_times</span><span class="p">):</span>
+
+                <span class="n">before</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+                <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">later</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">before</span>
+
+                <span class="n">add</span> <span class="o">=</span> <span class="n">add</span> <span class="o">+</span> <span class="n">later</span>
+
+            <span class="n">add</span> <span class="o">=</span> <span class="n">add</span> <span class="o">/</span> <span class="n">how_many_times</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Averaged &quot;</span><span class="p">,</span> <span class="n">how_many_times</span><span class="p">,</span> <span class="s2">&quot;time. Executed in:&quot;</span><span class="p">,</span> <span class="n">add</span><span class="p">,</span> <span class="s2">&quot;seconds&quot;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">decorated_function</span>
+
+    <span class="k">return</span> <span class="n">decorator</span>
+
+
+
+<span class="nd">@timer1</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">diag1</span><span class="p">(</span><span class="n">size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+
+    <span class="c1"># Generate a random symmetric matrix</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># Make the matrix symmetric</span>
+
+    <span class="c1"># Diagonalize using eigh (for Hermitian matrices)</span>
+    <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+
+
+<span class="n">diag1</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Averaged  10 time. Executed in: 0.07826969623565674 seconds
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="logger">
-<h2>2. Logger<a class="headerlink" href="#logger" title="Permalink to this heading">#</a></h2>
+<h2>3. Logger<a class="headerlink" href="#logger" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">datetime</span>
@@ -522,7 +582,8 @@ document.write(`
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timer">1. Timer</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logger">2. Logger</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#average-timer">2. Average Timer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#logger">3. Logger</a></li>
 </ul>
   </nav></div>
 

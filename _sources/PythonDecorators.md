@@ -48,7 +48,63 @@ diag(500)
 ```
 
 
-## 2. Logger
+## 2. Average Timer
+```{code-cell}
+import time
+import numpy as np
+from functools import wraps
+
+
+
+def timer1(how_many_times):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+
+            add = 0.0
+
+            for i in range(0, how_many_times):
+
+                before = time.time()
+                f(*args, **kwargs)
+                later = time.time() - before
+
+                add = add + later
+
+            add = add / how_many_times
+            print("Averaged ", how_many_times, "time. Executed in:", add, "seconds")
+
+            return f(*args, **kwargs)
+
+        return decorated_function
+
+    return decorator
+
+
+
+@timer1(10)
+def diag1(size: int):
+
+    # Generate a random symmetric matrix
+    A = np.random.rand(size, size)
+    A = (A + A.T) / 2  # Make the matrix symmetric
+
+    # Diagonalize using eigh (for Hermitian matrices)
+    eigenvalues, eigenvectors = np.linalg.eigh(A)
+
+
+
+diag1(500)
+
+
+```
+
+
+
+
+
+
+## 3. Logger
 ```{code-cell}
 import datetime
 
